@@ -12,11 +12,11 @@
 	</parent>
 
 	<groupId>sc.fiji</groupId>
-	<artifactId>Process_Pixels</artifactId>
-	<version>1.0.0</version>
+	<artifactId>VoxelMatrix_IO</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 
-	<name>plugins/Process_Pixels.jar</name>
-	<description>A Maven project implementing an ImageJ 1.x plugin</description>
+	<name>plugins/VoxelMatrix_IO.jar</name>
+	<description>A Maven project implementing VoxelMatrix input/output methods</description>
 
 	<dependencies>
 		<dependency>
@@ -63,17 +63,17 @@
 
 	<developers>
 		<developer>
-			<id>dscho</id>
-			<name>Johannes Schindelin</name>
-			<email>johannes.schindelin@gmx.de</email>
-			<url>http://loci.wisc.edu/people/johannes-schindelin</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<id>jarpon</id>
+			<name>Javier Arpon</name>
+			<email>javier.arpon@gmail.com</email>
+			<url>http://www-ijpb.versailles.inra.fr/en/bc/equipes/modelisation-imagerie/index.html</url>
+			<organization>IJPB INRA-Versailles</organization>
+			<organizationUrl>http://www-ijpb.versailles.inra.fr</organizationUrl>
 			<roles>
 				<role>architect</role>
 				<role>developer</role>
 			</roles>
-			<timezone>-6</timezone>
+			<timezone>+1</timezone>
 		</developer>
 	</developers>
 
@@ -90,10 +90,10 @@
 	</repositories>
 
 	<scm>
-		<connection>scm:git:git://github.com/imagej/minimal-ij1-plugin</connection>
-		<developerConnection>scm:git:git@github.com:imagej/minimal-ij1-plugin</developerConnection>
+		<connection>scm:git:git://github.com/jarpon/voxel-matrix-io</connection>
+		<developerConnection>scm:git:git@github.com:jarpon/voxel-matrix-io</developerConnection>
 		<tag>HEAD</tag>
-		<url>https://github.com/imagej/minimal-ij1-plugin</url>
+		<url>https://github.com/jarpon/voxel-matrix-io</url>
 	</scm>
 
 </project>
