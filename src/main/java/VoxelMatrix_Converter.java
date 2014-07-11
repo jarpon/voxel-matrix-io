@@ -27,8 +27,6 @@ public class VoxelMatrix_Converter implements PlugIn{
 	
 	public void run(String arg) 
 	{
-		//
-	
 		// get the file
 		String path = arg;
 		String directory = null;
@@ -38,7 +36,7 @@ public class VoxelMatrix_Converter implements PlugIn{
 			directory = od.getDirectory();
 			if (null == directory) return;
 			filename = od.getFileName();
-			path = directory + "/" + filename;
+			path = directory + filename;
 		} else {
 			// the argument is the path
 			File fileIn = new File(path);
@@ -56,21 +54,24 @@ public class VoxelMatrix_Converter implements PlugIn{
 		String fileNameOut = dlg.getFileName();
 				
 		imp = save_Image_To_VM( path, directoryOut, fileNameOut );
-		if( null != imp )
-		{
-			imp.setTitle(filename);
-			imp.show();
-		}
+//		if( null != imp )
+//		{
+//			imp.setTitle(filename);
+//			imp.show();
+//		}
 	}
 	
 	public ImagePlus save_Image_To_VM( String inputFile, String directoryOut, String fileNameOut ) 
 	{
 		// Open the image	
 		boolean needToShow = false;
-		IJ.run("Open...", "open="+inputFile);
-		ImagePlus imp = IJ.getImage();		
+		IJ.log(inputFile);
+//		IJ.run("Open...", "open="+inputFile);
+//		ImagePlus imp = IJ.getImage();
+		imp = IJ.openImage(inputFile);
 		//imp.hide();
-		String basename = imp.getShortTitle();
+		//String basename = imp.getShortTitle(); some problems detected
+		String basename = imp.getTitle();
 
 		pixelWidth = (float)imp.getCalibration().pixelWidth;
 		pixelHeight = (float)imp.getCalibration().pixelHeight;

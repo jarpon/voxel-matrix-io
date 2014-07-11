@@ -31,16 +31,15 @@ public class VoxelMatrix_Writer implements PlugIn {
 	public void run(String arg) {
 
 		// Extract current image with meta-data
-		ImagePlus imp = IJ.getImage();		
+		imp = IJ.getImage();
 		pixelWidth = (float)imp.getCalibration().pixelWidth;
 		pixelHeight = (float)imp.getCalibration().pixelHeight;
 		pixelDepth = (float)imp.getCalibration().pixelDepth;
 		unitString = imp.getCalibration().getXUnit();
-		
-		stack = imp.getStack();
 
 		// Open dialog to save image
-		String baseName = imp.getShortTitle();
+		//String baseName = imp.getShortTitle();
+		String baseName = imp.getTitle();
 		SaveDialog dlg = new SaveDialog("Choose VoxelMatrix file", baseName, ".vm");
 		IJ.log("/"+baseName+"/");
 
@@ -51,14 +50,21 @@ public class VoxelMatrix_Writer implements PlugIn {
 		File outputFile = new File(directory, fileName);
 
 		// Save stack
-		saveStack(stack, outputFile);
+		saveStack(outputFile);
+
 	}
 	
-	public void saveStack(ImageStack stack, File outputFile) 
+	public void saveStack(File outputFile) 
 	{
+
+		
+		stack = imp.getStack();
+
 		int size1 = stack.getWidth();
 		int size2 = stack.getHeight();
 		int size3 = stack.getSize();
+		
+		IJ.log("/"+size1+"/");
 
 		try 
 		{
@@ -67,7 +73,8 @@ public class VoxelMatrix_Writer implements PlugIn {
 			DataOutputStream dataOut = new DataOutputStream(bufferedOutput);
 
 			// Start writing to the output stream
-			int zero = 0;
+
+			int zero = 0;
 			dataOut.writeInt(zero);
 			dataOut.writeInt(zero);
 			dataOut.writeInt(zero);
@@ -81,7 +88,7 @@ public class VoxelMatrix_Writer implements PlugIn {
 			int type = 5;
 			dataOut.writeInt( reverse(type) );
 			
-			dataOut.writeInt( reverse(size1) );
+	            	dataOut.writeInt( reverse(size1) );	
 			dataOut.writeInt( reverse(size2) );
 			dataOut.writeInt( reverse(size3) );
 
@@ -92,23 +99,25 @@ public class VoxelMatrix_Writer implements PlugIn {
 			dataOut.writeInt( reverse(Float.floatToIntBits(pixelDepth)) );
 
 			// write pixels
-			for (int z=0; z == size3; ++z) {					for (int x=0; x == size1; ++x) {
-					for (int y=0; y == size2; ++y) {
-						float tmp = (float) stack.getVoxel(x,y,z);
-						dataOut.writeInt( reverse(Float.floatToIntBits( tmp )));
+			for (int z=0; z < size3; ++z) {	
+				for (int x=0; x < size1; ++x) {		
+					for (int y=0; y < size2; ++y) {
+						dataOut.writeInt(reverse(Float.floatToIntBits((float)stack.getVoxel(x,y,z))));
 					}
 				}
 			}
-			
+
 			// cleanup output stream
 			dataOut.flush();
 			dataOut.close();
-			
-		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			ex.printStackTrace();
+
 		}
+
+		catch (Exception e) 
+		{
+		    e.printStackTrace();
+		} 
+				
 	}
 		
 	// process to change values to little-endian	
