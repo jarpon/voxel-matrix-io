@@ -21,17 +21,17 @@ public class VoxelMatrix_Segmentation_Checker implements PlugIn{
 	{
 
 		//get the folder of the original images
-		//JFileChooser of = new JFileChooser();
-		JFileChooser of = new JFileChooser("/home/javier/data/projects/");
+		JFileChooser of = new JFileChooser();
+		//JFileChooser of = new JFileChooser("/home/javier/data/projects/");
 		of.setDialogTitle("Select the folder of your original images...");
 		//oc.setFileSelectionMode(JFileChooser.FILES_ONLY);   // default of class
    		of.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int retval = of.showOpenDialog(null);
 
 		//get the folder of the nucleus images
-		//JFileChooser nf = new JFileChooser();
-		JFileChooser nf = new JFileChooser("/home/javier/data/projects/");
-		nf.setDialogTitle("Select the folder of your nucleus images...");
+		JFileChooser nf = new JFileChooser();
+		//JFileChooser nf = new JFileChooser("/home/javier/data/projects/");
+		nf.setDialogTitle("Select the folder of your nuclei images...");
 		nf.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int retval2 = nf.showOpenDialog(null);
 
@@ -41,7 +41,7 @@ public class VoxelMatrix_Segmentation_Checker implements PlugIn{
 			String nucleusFolder = nf.getSelectedFile().getAbsolutePath();
 
 			try {
-				new VM_Segmentation_Checker(originalFolder, nucleusFolder);
+				new VMSegmentationChecker(originalFolder, nucleusFolder);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -51,7 +51,7 @@ public class VoxelMatrix_Segmentation_Checker implements PlugIn{
 	}
 }
 
-class VM_Segmentation_Checker extends PlugInFrame implements ActionListener{
+class VMSegmentationChecker extends PlugInFrame implements ActionListener{
 
 	String originalFolder = null;
 	String nucleusFolder = null;
@@ -66,7 +66,7 @@ class VM_Segmentation_Checker extends PlugInFrame implements ActionListener{
 
 	Panel panel = null;
 
-	public VM_Segmentation_Checker(
+	public VMSegmentationChecker(
 		String originalFolder, 
 		String nucleusFolder) throws IOException
 	{
@@ -146,14 +146,14 @@ class VM_Segmentation_Checker extends PlugInFrame implements ActionListener{
 		
 			String originalPath = originalFilesList[counter].toString();
 	    		VoxelMatrix_Reader originalVM = new VoxelMatrix_Reader();
-    			ImagePlus originalIMP = originalVM.read_it( originalPath );
+    			ImagePlus originalIMP = originalVM.readIt( originalPath );
     			
     			originalIMP.setTitle("Original_Image");
     			IJ.run(originalIMP, "Enhance Contrast...", "saturated=0.4 normalize process_all use");
 
 			String nucleusPath = nucleusFilesList[counter].toString();
 	    		VoxelMatrix_Reader nucleusVM = new VoxelMatrix_Reader();
-    			ImagePlus nucleusIMP = nucleusVM.read_it( nucleusPath );
+    			ImagePlus nucleusIMP = nucleusVM.readIt( nucleusPath );
     			
     			nucleusIMP.setTitle("Segmented_Image");	
 			IJ.run("Merge Channels...", " c1=Segmented_Image c2=Original_Image keep");

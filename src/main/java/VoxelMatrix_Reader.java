@@ -57,7 +57,7 @@ public class VoxelMatrix_Reader implements PlugIn
 
 		try 
 		{
-			imp = read_it(path);
+			imp = readIt(path);
 			if( null != imp )
 			{
 				imp.setTitle(filename);
@@ -74,7 +74,7 @@ public class VoxelMatrix_Reader implements PlugIn
 
 		
 	@SuppressWarnings("finally")
-	public ImagePlus read_it(String path) throws IOException  
+	public ImagePlus readIt(String path) throws IOException  
 	{		if (null == path) return null;	
 		
 		ImagePlus imp = new ImagePlus();

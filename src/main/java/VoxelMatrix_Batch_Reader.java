@@ -1,8 +1,11 @@
 import ij.plugin.PlugIn;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.swing.JFileChooser;
+
 import ij.ImagePlus;
 
 /*///////////////////////////////////////
@@ -42,6 +45,8 @@ public class VoxelMatrix_Batch_Reader implements PlugIn{
 	{
 		File[] filesList = new File(inputDir).listFiles();
 		String[] originalList = new File(inputDir).list();
+		//try this
+		Arrays.sort(filesList);
 		//File[] nucleusList = new File(nucleusDir).listFiles(); //only is necessary the original number
 
 		int totalImages = (int)originalList.length;
@@ -50,7 +55,7 @@ public class VoxelMatrix_Batch_Reader implements PlugIn{
 			String path = filesList[i].toString();
 	    		VoxelMatrix_Reader vm = new VoxelMatrix_Reader();
     			try {
-					imp = vm.read_it(path);
+					imp = vm.readIt(path);
 					imp.show();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

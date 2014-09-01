@@ -14,6 +14,7 @@ import java.io.IOException;
 //import ij.measure.Calibration;
 //import java.nio.*;
 
+@SuppressWarnings("unused")
 public class VoxelMatrix_Converter implements PlugIn{ 
 
 	protected ImagePlus imp;
@@ -53,7 +54,7 @@ public class VoxelMatrix_Converter implements PlugIn{
 		if (null == directoryOut) return;
 		String fileNameOut = dlg.getFileName();
 				
-		imp = save_Image_To_VM( path, directoryOut, fileNameOut );
+		imp = saveImageAsVM( path, directoryOut, fileNameOut );
 //		if( null != imp )
 //		{
 //			imp.setTitle(filename);
@@ -61,11 +62,11 @@ public class VoxelMatrix_Converter implements PlugIn{
 //		}
 	}
 	
-	public ImagePlus save_Image_To_VM( String inputFile, String directoryOut, String fileNameOut ) 
+	@SuppressWarnings("finally")
+	public ImagePlus saveImageAsVM( String inputFile, String directoryOut, String fileNameOut ) 
 	{
 		// Open the image	
 		boolean needToShow = false;
-		IJ.log(inputFile);
 //		IJ.run("Open...", "open="+inputFile);
 //		ImagePlus imp = IJ.getImage();
 		imp = IJ.openImage(inputFile);

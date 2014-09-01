@@ -2,10 +2,10 @@ import ij.ImagePlus;
 import ij.plugin.PlugIn;
 
 import java.io.File;
+import java.util.Arrays;
 
 import javax.swing.JFileChooser;
 //import ij.io.*;
-//import ij.IJ;
 //import ij.io.File;
 //import ij.*;
 //import ij.gui.*;
@@ -50,6 +50,8 @@ public class VoxelMatrix_Batch_Converter implements PlugIn{
 	public static void listRecursive( String inputDir, String outputDir ) 
 	{
 		File[] filesList = new File(inputDir).listFiles();
+		//try this
+		Arrays.sort(filesList);
 		@SuppressWarnings("unused")
 		ImagePlus imp = new ImagePlus();
 		int totalImages = filesList.length;
@@ -57,7 +59,7 @@ public class VoxelMatrix_Batch_Converter implements PlugIn{
 		{
 			String pathFile = filesList[i].toString();
 	    		VoxelMatrix_Converter voxelWriter = new VoxelMatrix_Converter();
-    			imp = voxelWriter.save_Image_To_VM( pathFile, outputDir, "null" );
+    			imp = voxelWriter.saveImageAsVM( pathFile, outputDir, "null" );
 		}
  	}
  	
