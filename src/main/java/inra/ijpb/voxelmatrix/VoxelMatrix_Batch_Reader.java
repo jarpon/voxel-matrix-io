@@ -1,3 +1,4 @@
+package inra.ijpb.voxelmatrix;
 import ij.plugin.PlugIn;
 
 import java.io.File;

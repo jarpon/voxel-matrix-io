@@ -1,3 +1,4 @@
+package inra.ijpb.voxelmatrix;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
