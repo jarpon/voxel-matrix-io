@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
@@ -18,8 +21,12 @@ import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -73,10 +80,45 @@ public class Segmentation_Checker implements PlugIn
 	JButton finishButton = null;
 	JButton exitButton = null;	
 	
+	JSlider transparencySlider = null;
+	
 	JPanel buttonsPanel = new JPanel();
 	
 	/** main panel */
-	JPanel all = new JPanel();
+	Panel all = new Panel();
+	
+	/**
+	 * Button listener
+	 */
+	private ActionListener listener = new ActionListener() {
+
+		
+	
+		public void actionPerformed(final ActionEvent e) {
+
+			
+			// listen to the buttons on separate threads not to block
+			// the event dispatch thread
+			exec.submit(new Runnable() {
+												
+				public void run()
+				{
+					if(e.getSource() == validateButton)
+					{
+											
+					}
+					else if( e.getSource() == discardButton )
+					{
+					
+					}
+					
+				}
+
+				
+			});
+		}
+	};
+	
 	
 	/**
 	 * Custom window to define the plugin GUI
@@ -119,10 +161,43 @@ public class Segmentation_Checker implements PlugIn
 
 			setTitle( "Segmentation Checker" );
 
+			// create buttons and add listener
 			validateButton = new JButton( "Validate" );
+			validateButton.addActionListener(listener);
+			
 			discardButton = new JButton( "Discard" );
+			discardButton.addActionListener(listener);
+			
 			finishButton = new JButton( "Finish it" );
+			finishButton.addActionListener(listener);
+			
 			exitButton = new JButton( "Exit" );
+			exitButton.addActionListener(listener);
+			exitButton.setToolTipText( "Exit plugin without changes" );
+			
+			// create transparency slider
+			JLabel sliderLabel = new JLabel( "Transparency", JLabel.CENTER );
+			transparencySlider = new JSlider( 0, 100 );
+			transparencySlider.setValue( (int) (100 * transparency) );
+			transparencySlider.setMajorTickSpacing( 20 );
+			transparencySlider.setMinorTickSpacing( 5 );
+			transparencySlider.setPaintLabels(true);
+			transparencySlider.setName( "Transparency" );
+			transparencySlider.setPaintTicks( true );
+			transparencySlider.addChangeListener( new ChangeListener() {
+				
+				@Override
+				public void stateChanged(ChangeEvent e) {
+					exec.submit(new Runnable() {
+						public void run() {							
+							transparency = transparencySlider.getValue() / 100f;
+							updateOverlay();
+							originalImage.updateAndDraw();
+						}							
+					});
+					
+				}
+			});
 			
 			// Options panel (left side of the GUI)
 			buttonsPanel.setBorder( BorderFactory.createTitledBorder( "Options" ) );
@@ -144,6 +219,10 @@ public class Segmentation_Checker implements PlugIn
 			buttonsPanel.add( finishButton, buttonsConstraints);
 			buttonsConstraints.gridy++;
 			buttonsPanel.add( exitButton, buttonsConstraints );
+			buttonsConstraints.gridy++;
+			buttonsPanel.add( sliderLabel, buttonsConstraints );
+			buttonsConstraints.gridy++;
+			buttonsPanel.add( transparencySlider, buttonsConstraints );
 			buttonsConstraints.gridy++;
 			
 			GridBagLayout layout = new GridBagLayout();
@@ -287,8 +366,7 @@ public class Segmentation_Checker implements PlugIn
 		 * Generated UID
 		 */
 		private static final long serialVersionUID = -7767481682958951196L;
-		
-		
+
 		
 	}// end class CustomWindow
 	
