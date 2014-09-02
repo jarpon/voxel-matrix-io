@@ -76,7 +76,7 @@ public class Segmentation_Checker implements PlugIn
 			finishButton = new JButton( "Finish it" );
 			exitButton = new JButton( "Exit" );
 			
-			// Training panel (left side of the GUI)
+			// Options panel (left side of the GUI)
 			buttonsPanel.setBorder( BorderFactory.createTitledBorder( "Options" ) );
 			GridBagLayout buttonsLayout = new GridBagLayout();
 			GridBagConstraints buttonsConstraints = new GridBagConstraints();
@@ -122,8 +122,19 @@ public class Segmentation_Checker implements PlugIn
 			allConstraints.gridy++;
 			allConstraints.weightx = 0;
 			allConstraints.weighty = 0;
-			if(null != sliceSelector)
-				all.add(sliceSelector, allConstraints);
+			// if the input image is 3d, put the
+			// slice selectors in place
+			if( null != super.sliceSelector )
+			{
+				all.add( super.sliceSelector, allConstraints );
+
+				if( null != super.zSelector )
+					all.add( super.zSelector, allConstraints );
+				if( null != super.tSelector )
+					all.add( super.tSelector, allConstraints );
+				if( null != super.cSelector )
+					all.add( super.cSelector, allConstraints );
+			}
 			allConstraints.gridy--;
 
 			GridBagLayout wingb = new GridBagLayout();
@@ -254,7 +265,7 @@ public class Segmentation_Checker implements PlugIn
 		if( counter >= segmentedFilesList.length ) 
 			return null;
 		
-		IJ.log( counter+"/"+segmentedFilesList.length + "--" + currentSegmentedImageName );
+		IJ.log( (counter+1)+"/"+segmentedFilesList.length + "--" + currentSegmentedImageName );
 		
 		return currentSegmentedImageName;
 	}
