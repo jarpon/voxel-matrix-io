@@ -126,6 +126,10 @@ public class Segmentation_Checker implements PlugIn
 	 */
 	private class CustomWindow extends StackWindow
 	{
+		/**
+		 * Generated UID
+		 */
+		private static final long serialVersionUID = -7767481682958951196L;
 
 		public CustomWindow( ImagePlus imp ) 
 		{
@@ -177,7 +181,6 @@ public class Segmentation_Checker implements PlugIn
 						public void run() {							
 							transparency = transparencySlider.getValue() / 100f;
 							updateOverlay();
-							originalImage.updateAndDraw();
 						}							
 					});
 					
@@ -277,7 +280,6 @@ public class Segmentation_Checker implements PlugIn
 									//IJ.log("moving scroll");
 									originalImage.killRoi();									
 									updateOverlay();
-									originalImage.updateAndDraw();									
 								}
 							}							
 						});
@@ -296,7 +298,6 @@ public class Segmentation_Checker implements PlugIn
 								//IJ.log("moving scroll");
 								originalImage.killRoi();									
 								updateOverlay();
-								originalImage.updateAndDraw();
 							}
 						});
 
@@ -325,7 +326,6 @@ public class Segmentation_Checker implements PlugIn
 									//IJ.log("moving scroll");
 									originalImage.killRoi();									
 									updateOverlay();
-									originalImage.updateAndDraw();
 								}
 							}
 						});
@@ -343,16 +343,9 @@ public class Segmentation_Checker implements PlugIn
 			
 			// update display image
 			updateOverlay();
-			originalImage.updateAndDraw();
-			
+						
 		}
-
-		/**
-		 * Generated UID
-		 */
-		private static final long serialVersionUID = -7767481682958951196L;
-
-		
+	
 	}// end class CustomWindow
 	
 	
@@ -373,6 +366,7 @@ public class Segmentation_Checker implements PlugIn
 			roi.setOpacity( 1.0 - transparency );
 			
 			originalImage.setOverlay( new Overlay( roi ) );
+			originalImage.updateAndDraw();
 		}
 	}
 	
@@ -485,7 +479,7 @@ public class Segmentation_Checker implements PlugIn
 
 		if( null == currentImageName )
 			return false;
-						
+							
 		try{
 			// open first image (check if it is VoxelMatrix first)
 			originalImage = currentImageName.endsWith( ".vm" ) ?
@@ -515,15 +509,11 @@ public class Segmentation_Checker implements PlugIn
 		segmentedImage.setDisplayRange( 0, 255 );
 		segmentedImage.updateAndDraw();
 		
-		// update display image
+				
+		// update display image		
 		repaintWindow();
+		updateOverlay();
 		
-//		canvas = originalImage.getCanvas();
-//
-//		// Zoom in if image is too small
-//		while(canvas.getWidth() < 512 && canvas.getHeight() < 512)
-////		while(originalImage.getCanvas().getWidth() < 512 && originalImage.getCanvas().getHeight() < 512)
-//			IJ.run( originalImage, "In","" );
 		
 		return true;
 	}
@@ -573,10 +563,19 @@ public class Segmentation_Checker implements PlugIn
 					public void run() {
 						win.setImage(originalImage);
 
+						canvas = win.getCanvas();
+
+						// Zoom in if image is too small
+						int largestDim = canvas.getWidth() > canvas.getHeight() ? canvas.getWidth() : canvas.getHeight() ;
+						
+						int iter = 512 / largestDim;
+						
+						for( int i=0; i<iter; i++)
+							IJ.run( win.getImagePlus(), "In","" );
+
 						win.invalidate();
 						win.validate();
 						win.repaint();
-			
 					}
 				});
 	}
