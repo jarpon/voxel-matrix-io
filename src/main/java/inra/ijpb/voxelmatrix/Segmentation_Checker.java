@@ -14,7 +14,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
@@ -45,8 +44,6 @@ public class Segmentation_Checker implements PlugIn
 	public static String originalFolder="";
 	/** segmented directory **/
 	public static String segmentedFolder="";
-	
-	VoxelMatrix_Reader reader = new VoxelMatrix_Reader();
 	
 	/** current image counter */
 	int counter = -1;
@@ -138,7 +135,12 @@ public class Segmentation_Checker implements PlugIn
 			
 			// assign original image
 			originalImage = imp;
-			
+
+			// read corresponding segmented image						
+			segmentedImage = currentImageName.endsWith( ".vm" ) ?
+					VoxelMatrixIO.read( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName ) :
+					new ImagePlus( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName );
+		
 			
 			//segmentedImage.show();
 			
@@ -482,8 +484,9 @@ public class Segmentation_Checker implements PlugIn
 							
 		try{
 			// open first image (check if it is VoxelMatrix first)
-			originalImage = currentImageName.endsWith( ".vm" ) ?
-				reader.readIt( originalFilesList[counter].getParent().toString() + "/" + currentImageName ) :
+
+			final ImagePlus firstImage = currentImageName.endsWith( ".vm" ) ?
+				VoxelMatrixIO.read( originalFilesList[counter].getParent().toString() + "/" + currentImageName ) :
 				new ImagePlus( originalFilesList[counter].getParent().toString() + "/" + currentImageName );
 			
 		}catch( Exception ex ){
@@ -494,7 +497,7 @@ public class Segmentation_Checker implements PlugIn
 		// read corresponding segmented image
 		try{				
 			segmentedImage = currentImageName.endsWith( ".vm" ) ?
-					reader.readIt( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName ) :
+					VoxelMatrixIO.read( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName ) :
 						new ImagePlus( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName );
 
 		}catch( Exception ex ){

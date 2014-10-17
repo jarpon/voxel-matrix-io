@@ -1,16 +1,10 @@
 package inra.ijpb.voxelmatrix;
-import ij.ImagePlus;
 import ij.plugin.PlugIn;
 
 import java.io.File;
 import java.util.Arrays;
 
 import javax.swing.JFileChooser;
-//import ij.io.*;
-//import ij.io.File;
-//import ij.*;
-//import ij.gui.*;
-//import ij.process.*;
 
 /*///////////////////////////////////////
 This plugin opens vm files found into a folder.
@@ -53,14 +47,11 @@ public class VoxelMatrix_Batch_Converter implements PlugIn{
 		File[] filesList = new File(inputDir).listFiles();
 		//try this
 		Arrays.sort(filesList);
-		@SuppressWarnings("unused")
-		ImagePlus imp = new ImagePlus();
+		
 		int totalImages = filesList.length;
 		for (int i=0; i < totalImages; ++i) 
 		{
-			String pathFile = filesList[i].toString();
-	    		VoxelMatrix_Converter voxelWriter = new VoxelMatrix_Converter();
-    			imp = voxelWriter.saveImageAsVM( pathFile, outputDir, "null" );
+	    	VoxelMatrixIO.convert( filesList[i].toString(), outputDir + "/" + filesList[i].getName() );
 		}
  	}
  	
