@@ -224,7 +224,7 @@ public class VoxelMatrixIO {
 		int size2 = stack.getHeight();
 		int size3 = stack.getSize();
 		
-		IJ.log("/"+size1+"/");
+		//IJ.log("/"+size1+"/");
 		
 		File outputFile = new File( path );
 
@@ -291,7 +291,7 @@ public class VoxelMatrixIO {
 
 	private final static int unitStringToInt(String s)
 	{
-		IJ.log("/"+s+"/");
+		//IJ.log("/"+s+"/");
 		if ( s.equals("cm") ) return -2;
 		if ( s.equals("mm") ) return -3;
 		if ( s.equals("µm") || s.equals("um") ) return -6;
