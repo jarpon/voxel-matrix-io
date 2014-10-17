@@ -53,16 +53,10 @@ public class VoxelMatrix_Batch_Reader implements PlugIn{
 		int totalImages = (int)originalList.length;
 		for (int i=0; i < totalImages; ++i) 
 		{
-			String path = filesList[i].toString();
-	    		VoxelMatrix_Reader vm = new VoxelMatrix_Reader();
-    			try {
-					imp = vm.readIt(path);
-					imp.show();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    			
+			String path = filesList[i].toString();	    		    			
+			imp = VoxelMatrixIO.read( path );
+			if( null != imp )
+				imp.show();				    			
 		}
  	}
  	
