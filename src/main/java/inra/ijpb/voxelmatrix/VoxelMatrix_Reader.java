@@ -34,7 +34,7 @@ public class VoxelMatrix_Reader implements PlugIn
 		String directory = null;
 		if (null == path || 0 == path.length()) 
 		{
-			OpenDialog od = new OpenDialog("Choose .vm file", null, "*.vm");
+			OpenDialog od = new OpenDialog("Choose .vm file", OpenDialog.getLastDirectory(), "*.vm");
 			directory = od.getDirectory();
 			if (null == directory) return;
 			filename = od.getFileName();
