@@ -386,8 +386,8 @@ public class Segmentation_Checker implements PlugIn
 		float hue = 0f;
 		// saturation for assigning new color ([0.5-1.0]) 
 		float saturation = 1f; 
-		Color[] colors = new Color[ 254 ]; 
-		for(int i=0; i<254; i++)
+		Color[] colors = new Color[ 255 ]; 
+		for(int i=0; i<255; i++)
 		{
 			colors[ i ] = Color.getHSBColor(hue, saturation, 1);
 
@@ -400,7 +400,7 @@ public class Segmentation_Checker implements PlugIn
 			saturation = 0.5f * saturation + 0.5f;							
 		}
 							
-		for(int i = 1 ; i < 255; i++)
+		for(int i = 1 ; i < 256; i++)
 		{
 			//IJ.log("i = " + i + " color index = " + colorIndex);
 			red[i] = (byte) colors[ i-1 ].getRed();
@@ -479,18 +479,28 @@ public class Segmentation_Checker implements PlugIn
 
 		if( null == currentImageName )
 			return false;
-							
+		
+		String realCurrentImageName = currentImageName; 
+		
+		boolean variousNucleus = currentImageName.contains("-");
+
+		if ( variousNucleus == true )
+		{
+			int realLast = currentImageName.lastIndexOf("-");
+			realCurrentImageName = currentImageName.substring( 0, realLast ) + currentImageName.substring( realLast+2, currentImageName.length() );
+		}
+		
+		
 		try{
 			// open first image (check if it is VoxelMatrix first)
 			originalImage = currentImageName.endsWith( ".vm" ) ?
-				reader.readIt( originalFilesList[counter].getParent().toString() + "/" + currentImageName ) :
-				new ImagePlus( originalFilesList[counter].getParent().toString() + "/" + currentImageName );
+				reader.readIt( originalFilesList[1].getParent().toString() + "/" + realCurrentImageName ) :
+				new ImagePlus( originalFilesList[1].getParent().toString() + "/" + realCurrentImageName );
 			
 		}catch( Exception ex ){
-			IJ.error("Could not load " + originalFilesList[counter].getParent().toString() + "/" + currentImageName);
+			IJ.error("Could not load " + originalFilesList[counter].getParent().toString() + "/" + realCurrentImageName);
 			ex.printStackTrace();
 		}
-		
 		// read corresponding segmented image
 		try{				
 			segmentedImage = currentImageName.endsWith( ".vm" ) ?
@@ -508,7 +518,6 @@ public class Segmentation_Checker implements PlugIn
 		segmentedImage.getImageStack().setColorModel( overlayLUT );
 		segmentedImage.setDisplayRange( 0, 255 );
 		segmentedImage.updateAndDraw();
-		
 				
 		// update display image		
 		repaintWindow();
@@ -538,7 +547,7 @@ public class Segmentation_Checker implements PlugIn
 		String discardedFolder = segmentedFilesList[0].getParentFile().getParentFile().toString()+ "/discarded";
 		IJ.log(discardedFolder);
 		new File(discardedFolder).mkdirs();
-		float success = ( discardedFilesList.size()*100 / (counter+1) ) ; 
+		float success = ( discardedFilesList.size()*100 / (counter) ) ; 
 		IJ.log( success + "% of files discarded:" );
 		
 		for ( int i=0; i<discardedFilesList.size(); ++i )
@@ -594,12 +603,22 @@ public class Segmentation_Checker implements PlugIn
 		
 		String currentSegmentedImageName = segmentedFilesList[counter].getName();
 		
+		String realCurrentSegmentedImageName = currentSegmentedImageName; 
+		
+		boolean variousNucleus = currentSegmentedImageName.contains("-");
+
+		if ( variousNucleus == true )
+		{
+			int realLast = currentSegmentedImageName.lastIndexOf("-");
+			realCurrentSegmentedImageName = currentSegmentedImageName.substring( 0, realLast ) + currentSegmentedImageName.substring( realLast+2, currentSegmentedImageName.length() );
+		}
+		
 		// look for corresponding original image
 		boolean found = false;
 		while( found == false && counter >= segmentedFilesList.length)
 		{
 			for(int i=1; i<originalFilesList.length; i ++)
-				if( currentSegmentedImageName.equals( originalFilesList[ i ].getName() ) )
+				if( realCurrentSegmentedImageName.equals( originalFilesList[ i ].getName() ) )
 				{
 					found = true;
 					break;
