@@ -13,7 +13,7 @@
 
 	<groupId>sc.fiji</groupId>
 	<artifactId>VoxelMatrix_IO</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3-SNAPSHOT</version>
 
 	<name>plugins/VoxelMatrix_IO.jar</name>
 	<description>A Maven project implementing VoxelMatrix input/output methods
