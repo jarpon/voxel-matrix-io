@@ -45,8 +45,6 @@ public class Segmentation_Checker implements PlugIn
 	/** segmented directory **/
 	public static String segmentedFolder="";
 	
-	VoxelMatrix_Reader reader = new VoxelMatrix_Reader();
-	
 	/** current image counter */
 	int counter = -1;
 	
@@ -136,7 +134,7 @@ public class Segmentation_Checker implements PlugIn
 			// read corresponding segmented image
 			try{				
 				segmentedImage = currentImageName.endsWith( ".vm" ) ?
-					reader.readIt( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName ) :
+					VoxelMatrixIO.read( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName ) :
 					new ImagePlus( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName );
 			
 			}catch( Exception ex ){
@@ -486,7 +484,7 @@ public class Segmentation_Checker implements PlugIn
 		try{
 			// open first image (check if it is VoxelMatrix first)
 			final ImagePlus firstImage = currentImageName.endsWith( ".vm" ) ?
-				reader.readIt( originalFilesList[counter].getParent().toString() + "/" + currentImageName ) :
+				VoxelMatrixIO.read( originalFilesList[counter].getParent().toString() + "/" + currentImageName ) :
 				new ImagePlus( originalFilesList[counter].getParent().toString() + "/" + currentImageName );
 			// Build GUI
 			SwingUtilities.invokeLater(
