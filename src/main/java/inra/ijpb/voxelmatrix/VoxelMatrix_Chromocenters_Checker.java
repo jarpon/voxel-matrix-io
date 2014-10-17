@@ -155,18 +155,15 @@ class VoxelMatrixSegmentationChecker extends PlugInFrame implements ActionListen
 					
 			IJ.log( (counter+1)+"/"+segmentedFilesList.length + "--" + segmentedFilesList[counter].getName().toString() );
 			
-			//String originalPath = originalFilesList[counter].toString();
-	    	VoxelMatrix_Reader originalVM = new VoxelMatrix_Reader();
-    		//ImagePlus originalIMP = originalVM.readIt( originalPath );
-	    	ImagePlus originalIMP = originalVM.readIt( originalFilesList[counter].getParent().toString() + "/" + segmentedFilesList[counter].getName().toString() );
+	    	ImagePlus originalIMP = VoxelMatrixIO.read( originalFilesList[counter].getParent().toString() + "/" + segmentedFilesList[counter].getName().toString() );
     		originalIMP.show();
     		
     		originalIMP.setTitle("Original_Image");
     		//IJ.run(originalIMP, "Enhance Contrast...", "saturated=0.4 normalize process_all use");
 
 			String nucleusPath = segmentedFilesList[counter].toString();
-	    	VoxelMatrix_Reader nucleusVM = new VoxelMatrix_Reader();
-    		ImagePlus segmentedIMP = nucleusVM.readIt( nucleusPath );
+	    	
+    		ImagePlus segmentedIMP = VoxelMatrixIO.read( nucleusPath );
     		//ImageWindow iw = new ImageWindow(segmentedIMP);
     		//iw.setNextLocation(, y)
     		
