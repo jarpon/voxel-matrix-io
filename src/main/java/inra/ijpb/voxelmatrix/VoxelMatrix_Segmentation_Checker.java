@@ -144,24 +144,24 @@ class VMSegmentationChecker extends PlugInFrame implements ActionListener{
 		if ( hasSameName.equals(nucleusFilesList[counter].getName().toString()) ) {
 
 			IJ.log( (counter+1)+"/"+originalFilesList.length + "--" + originalFilesList[counter].getName().toString() );
-		
+
 			String originalPath = originalFilesList[counter].toString();
-	    		VoxelMatrix_Reader originalVM = new VoxelMatrix_Reader();
-    			ImagePlus originalIMP = originalVM.readIt( originalPath );
-    			
-    			originalIMP.setTitle("Original_Image");
-    			IJ.run(originalIMP, "Enhance Contrast...", "saturated=0.4 normalize process_all use");
+
+			ImagePlus originalIMP = VoxelMatrixIO.read( originalPath );
+
+			originalIMP.setTitle("Original_Image");
+			IJ.run(originalIMP, "Enhance Contrast...", "saturated=0.4 normalize process_all use");
 
 			String nucleusPath = nucleusFilesList[counter].toString();
-	    		VoxelMatrix_Reader nucleusVM = new VoxelMatrix_Reader();
-    			ImagePlus nucleusIMP = nucleusVM.readIt( nucleusPath );
-    			
-    			nucleusIMP.setTitle("Segmented_Image");	
+
+			ImagePlus nucleusIMP = VoxelMatrixIO.read( nucleusPath );
+
+			nucleusIMP.setTitle("Segmented_Image");	
 			IJ.run("Merge Channels...", " c1=Segmented_Image c2=Original_Image keep");
 
 			nucleusIMP.close();
 			originalIMP.close();
-			
+
 			IJ.selectWindow("RGB");
 			currentImage = IJ.getImage();
 			//currentImage.setTitle(originalIMP.getName());
