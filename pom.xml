@@ -13,10 +13,19 @@
 
 	<groupId>sc.fiji</groupId>
 	<artifactId>VoxelMatrix_IO</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.2-SNAPSHOT</version>
 
 	<name>plugins/VoxelMatrix_IO.jar</name>
-	<description>A Maven project implementing VoxelMatrix input/output methods</description>
+	<description>A Maven project implementing VoxelMatrix input/output methods
+
+Includes:
+
+- Open .vm: to open .vm files
+- Save as .vm: to allow saving as .vm file
+- Converter: to directly convert an image to .vm file
+- Batch opener: to open all the .vm images contained in a folder
+- Batch converter: to convert all the images of a folder to .vm files
+- Segmentation Checker: to compare the segmented images to the original ones</description>
 
 	<dependencies>
 		<dependency>

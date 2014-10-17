@@ -68,7 +68,8 @@ public class Segmentation_Checker implements PlugIn
 	
 	/** main GUI window */
 	private CustomWindow win;
-	
+	private ImageCanvas canvas;
+
 	/** executor service to launch threads for the plugin methods and events */
 	final ExecutorService exec = Executors.newFixedThreadPool(1);
 
@@ -102,14 +103,13 @@ public class Segmentation_Checker implements PlugIn
 				public void run()
 				{
 					if(e.getSource() == validateButton)
-					{
-											
-					}
+						nextImage();
 					else if( e.getSource() == discardButton )
-					{
-					
-					}
-					
+						discardImage();
+					else if( e.getSource() == finishButton )
+						finishProcess();
+					else if( e.getSource() == exitButton )
+						IJ.run("Close All");
 				}
 
 				
@@ -123,6 +123,10 @@ public class Segmentation_Checker implements PlugIn
 	 */
 	private class CustomWindow extends StackWindow
 	{
+		/**
+		 * Generated UID
+		 */
+		private static final long serialVersionUID = -7767481682958951196L;
 
 		public CustomWindow( ImagePlus imp ) 
 		{
@@ -131,27 +135,16 @@ public class Segmentation_Checker implements PlugIn
 			
 			// assign original image
 			originalImage = imp;
-			// read corresponding segmented image
-			try{				
-				segmentedImage = currentImageName.endsWith( ".vm" ) ?
+
+			// read corresponding segmented image						
+			segmentedImage = currentImageName.endsWith( ".vm" ) ?
 					VoxelMatrixIO.read( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName ) :
 					new ImagePlus( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName );
-			
-			}catch( Exception ex ){
-				IJ.error("Could not load " + segmentedFilesList[counter].getParent().toString() + "/" + currentImageName);
-				ex.printStackTrace();
-				return;
-			}
-
-			// assign LUT to segmented image
-			segmentedImage.getProcessor().setColorModel( overlayLUT );
-			segmentedImage.getImageStack().setColorModel( overlayLUT );
-			segmentedImage.setDisplayRange( 0, 255 );
-			segmentedImage.updateAndDraw();
+		
 			
 			//segmentedImage.show();
 			
-			final ImageCanvas canvas = (ImageCanvas) getCanvas();
+			canvas = (ImageCanvas) getCanvas();
 
 			// Zoom in if image is too small
 			while(ic.getWidth() < 512 && ic.getHeight() < 512)
@@ -190,7 +183,6 @@ public class Segmentation_Checker implements PlugIn
 						public void run() {							
 							transparency = transparencySlider.getValue() / 100f;
 							updateOverlay();
-							originalImage.updateAndDraw();
 						}							
 					});
 					
@@ -290,7 +282,6 @@ public class Segmentation_Checker implements PlugIn
 									//IJ.log("moving scroll");
 									originalImage.killRoi();									
 									updateOverlay();
-									originalImage.updateAndDraw();									
 								}
 							}							
 						});
@@ -309,7 +300,6 @@ public class Segmentation_Checker implements PlugIn
 								//IJ.log("moving scroll");
 								originalImage.killRoi();									
 								updateOverlay();
-								originalImage.updateAndDraw();
 							}
 						});
 
@@ -338,7 +328,6 @@ public class Segmentation_Checker implements PlugIn
 									//IJ.log("moving scroll");
 									originalImage.killRoi();									
 									updateOverlay();
-									originalImage.updateAndDraw();
 								}
 							}
 						});
@@ -356,16 +345,9 @@ public class Segmentation_Checker implements PlugIn
 			
 			// update display image
 			updateOverlay();
-			originalImage.updateAndDraw();
-			
+						
 		}
-
-		/**
-		 * Generated UID
-		 */
-		private static final long serialVersionUID = -7767481682958951196L;
-
-		
+	
 	}// end class CustomWindow
 	
 	
@@ -386,6 +368,7 @@ public class Segmentation_Checker implements PlugIn
 			roi.setOpacity( 1.0 - transparency );
 			
 			originalImage.setOverlay( new Overlay( roi ) );
+			originalImage.updateAndDraw();
 		}
 	}
 	
@@ -476,33 +459,129 @@ public class Segmentation_Checker implements PlugIn
 		// sort file names
 		Arrays.sort( segmentedFilesList );
 		
-		currentImageName = getNextImageName();
-		
-		if( null == currentImageName )
+		if ( false == nextImage() )
 			return;
-						
+		
+
+		final ImagePlus firstImage = originalImage;
+		// Build GUI
+		SwingUtilities.invokeLater(
+				new Runnable() {
+					public void run() {
+						win = new CustomWindow( firstImage );
+						win.pack();
+					}
+				});
+
+	}
+
+	boolean nextImage()
+	{
+		currentImageName = getNextImageName();
+
+		if( null == currentImageName )
+			return false;
+							
 		try{
 			// open first image (check if it is VoxelMatrix first)
+
 			final ImagePlus firstImage = currentImageName.endsWith( ".vm" ) ?
 				VoxelMatrixIO.read( originalFilesList[counter].getParent().toString() + "/" + currentImageName ) :
 				new ImagePlus( originalFilesList[counter].getParent().toString() + "/" + currentImageName );
-			// Build GUI
-			SwingUtilities.invokeLater(
-					new Runnable() {
-						public void run() {
-							win = new CustomWindow( firstImage );
-							win.pack();
-						}
-					});
+			
 		}catch( Exception ex ){
 			IJ.error("Could not load " + originalFilesList[counter].getParent().toString() + "/" + currentImageName);
 			ex.printStackTrace();
 		}
 		
+		// read corresponding segmented image
+		try{				
+			segmentedImage = currentImageName.endsWith( ".vm" ) ?
+					VoxelMatrixIO.read( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName ) :
+						new ImagePlus( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName );
 
+		}catch( Exception ex ){
+			IJ.error("Could not load " + segmentedFilesList[counter].getParent().toString() + "/" + currentImageName);
+			ex.printStackTrace();
+			return false;
+		}
 
+		// assign LUT to segmented image
+		segmentedImage.getProcessor().setColorModel( overlayLUT );
+		segmentedImage.getImageStack().setColorModel( overlayLUT );
+		segmentedImage.setDisplayRange( 0, 255 );
+		segmentedImage.updateAndDraw();
+		
+				
+		// update display image		
+		repaintWindow();
+		updateOverlay();
+		
+		
+		return true;
 	}
 	
+	void discardImage()
+	{
+		discardedFilesList.add( segmentedFilesList[counter].getPath().toString() );
+		IJ.log("Images discarded: " + discardedFilesList.size() + "/" + (counter+1) );
+		
+		if( counter < segmentedFilesList.length )
+			nextImage();
+		else
+		{
+			IJ.run("Close All");
+			finishProcess();
+		}
+	}
+
+	void finishProcess()
+	{
+		
+		String discardedFolder = segmentedFilesList[0].getParentFile().getParentFile().toString()+ "/discarded";
+		IJ.log(discardedFolder);
+		new File(discardedFolder).mkdirs();
+		float success = ( discardedFilesList.size()*100 / (counter+1) ) ; 
+		IJ.log( success + "% of files discarded:" );
+		
+		for ( int i=0; i<discardedFilesList.size(); ++i )
+		{
+			File discardedFile = new File( discardedFilesList.get(i).toString() );
+			discardedFile.renameTo( new File(discardedFolder +"/"+ discardedFile.getName()) );
+
+			IJ.log( discardedFile.getName().toString() );
+			//IJ.log( "numdiscarded"+ Integer.toString(discardedFilesList.size()) );
+		}
+		return;
+	}
+		
+	/**
+	 * Repaint whole window
+	 */
+	private void repaintWindow()
+	{
+		// Repaint window
+		SwingUtilities.invokeLater(
+				new Runnable() {
+					public void run() {
+						win.setImage(originalImage);
+
+						canvas = win.getCanvas();
+
+						// Zoom in if image is too small
+						int largestDim = canvas.getWidth() > canvas.getHeight() ? canvas.getWidth() : canvas.getHeight() ;
+						
+						int iter = 512 / largestDim;
+						
+						for( int i=0; i<iter; i++)
+							IJ.run( win.getImagePlus(), "In","" );
+
+						win.invalidate();
+						win.validate();
+						win.repaint();
+					}
+				});
+	}
 	/**
 	 * Get next image name to treat (existing original and segmented images)
 	 * NOTE: it increases the counter until it finds a suitable image name.
