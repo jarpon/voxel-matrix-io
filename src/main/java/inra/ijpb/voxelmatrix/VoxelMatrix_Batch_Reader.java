@@ -2,7 +2,6 @@ package inra.ijpb.voxelmatrix;
 import ij.plugin.PlugIn;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 import javax.swing.JFileChooser;
@@ -42,7 +41,7 @@ public class VoxelMatrix_Batch_Reader implements PlugIn{
 		else return;
 	}
 	   
-	public static <ImagePlus> void listRecursive( String inputDir ) 
+	public static void listRecursive( String inputDir ) 
 	{
 		File[] filesList = new File(inputDir).listFiles();
 		String[] originalList = new File(inputDir).list();
