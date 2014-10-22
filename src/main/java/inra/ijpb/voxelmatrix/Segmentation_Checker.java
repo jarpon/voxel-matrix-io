@@ -121,6 +121,9 @@ public class Segmentation_Checker implements PlugIn
 	/**
 	 * Custom window to define the plugin GUI
 	 */
+	/**
+	 * Custom window to define the plugin GUI
+	 */
 	private class CustomWindow extends StackWindow
 	{
 		/**
@@ -135,12 +138,7 @@ public class Segmentation_Checker implements PlugIn
 			
 			// assign original image
 			originalImage = imp;
-
-			// read corresponding segmented image						
-			segmentedImage = currentImageName.endsWith( ".vm" ) ?
-					VoxelMatrixIO.read( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName ) :
-					new ImagePlus( segmentedFilesList[counter].getParent().toString() + "/" + currentImageName );
-		
+			
 			
 			//segmentedImage.show();
 			
