@@ -450,8 +450,7 @@ public class Segmentation_Checker implements PlugIn
 		segmentedDir = segmentedDir.replace('\\', '/');
 		if (!segmentedDir.endsWith("/")) segmentedDir += "/";		
 
-		// Find first original image with corresponding segmentation
-		
+				
 		// initialize list of discarded files
 		discardedFilesList = new ArrayList<String>(); 
 		
@@ -460,8 +459,13 @@ public class Segmentation_Checker implements PlugIn
 		// sort file names
 		Arrays.sort( segmentedFilesList );
 		
+		// Find first original image with corresponding segmentation
 		if ( false == nextImage() )
+		{
+			IJ.error( "Couldn't find proper images to check segmentation.\n"
+					+ "Please, make sure the input folders are correct" );
 			return;
+		}
 		
 
 		final ImagePlus firstImage = originalImage;
