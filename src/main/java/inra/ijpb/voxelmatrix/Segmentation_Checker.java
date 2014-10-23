@@ -67,7 +67,7 @@ public class Segmentation_Checker implements PlugIn
 	ArrayList<String> discardedFilesList = null;
 	
 	/** main GUI window */
-	private CustomWindow win;
+	private CustomWindow win = null;
 	private ImageCanvas canvas;
 
 	/** executor service to launch threads for the plugin methods and events */
@@ -535,7 +535,8 @@ public class Segmentation_Checker implements PlugIn
 		segmentedImage.updateAndDraw();
 				
 		// update display image		
-		repaintWindow();
+		if( null != win )
+			repaintWindow();
 		updateOverlay();
 		
 		
