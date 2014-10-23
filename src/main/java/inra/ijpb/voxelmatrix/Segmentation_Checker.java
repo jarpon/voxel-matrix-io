@@ -103,7 +103,10 @@ public class Segmentation_Checker implements PlugIn
 				public void run()
 				{
 					if(e.getSource() == validateButton)
-						nextImage();
+					{
+						if( false == nextImage() )
+							IJ.log( "All images have been processed." );
+					}
 					else if( e.getSource() == discardButton )
 						discardImage();
 					else if( e.getSource() == finishButton )
@@ -473,6 +476,11 @@ public class Segmentation_Checker implements PlugIn
 
 	}
 
+	/**
+	 * Set displayed grayscale image to next image in the folder
+	 * 
+	 * @return false if not image could be loaded.
+	 */
 	boolean nextImage()
 	{
 		currentImageName = getNextImageName();
@@ -532,7 +540,8 @@ public class Segmentation_Checker implements PlugIn
 		IJ.log("Images discarded: " + discardedFilesList.size() + "/" + (counter+1) );
 		
 		if( counter < segmentedFilesList.length )
-			nextImage();
+			if( false == nextImage() )
+				IJ.log( "All images have been processed." );
 		else
 		{
 			IJ.run("Close All");
