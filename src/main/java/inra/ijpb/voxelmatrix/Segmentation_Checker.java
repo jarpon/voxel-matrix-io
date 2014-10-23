@@ -500,13 +500,14 @@ public class Segmentation_Checker implements PlugIn
 		
 		
 		try{
-				// 	open image (check if it is VoxelMatrix first)
-				originalImage = currentImageName.endsWith( ".vm" ) ?
-				VoxelMatrixIO.read( originalFilesList[counter].getParent().toString() + "/" + currentImageName ) :
-				new ImagePlus( originalFilesList[counter].getParent().toString() + "/" + currentImageName );			
+			// 	open image (check if it is VoxelMatrix first)
+			originalImage = currentImageName.endsWith( ".vm" ) ?
+					VoxelMatrixIO.read( originalFilesList[counter].getParent().toString() + "/" + currentImageName ) :
+					new ImagePlus( originalFilesList[counter].getParent().toString() + "/" + currentImageName );			
 		}catch( Exception ex ){
 			IJ.error("Could not load " + originalFilesList[counter].getParent().toString() + "/" + realCurrentImageName);
 			ex.printStackTrace();
+			return false;
 		}
 		// read corresponding segmented image
 		try{				
@@ -519,6 +520,9 @@ public class Segmentation_Checker implements PlugIn
 			ex.printStackTrace();
 			return false;
 		}
+		
+		if( null == originalImage || null == segmentedImage )
+			return false;
 
 		// assign LUT to segmented image
 		segmentedImage.getProcessor().setColorModel( overlayLUT );
