@@ -112,7 +112,7 @@ public class Segmentation_Checker implements PlugIn
 					else if( e.getSource() == finishButton )
 						finishProcess();
 					else if( e.getSource() == exitButton )
-						IJ.run("Close All");
+						win.close();
 				}
 
 				
@@ -550,8 +550,8 @@ public class Segmentation_Checker implements PlugIn
 				IJ.log( "All images have been processed." );
 		else
 		{
-			IJ.run("Close All");
 			finishProcess();
+			win.close();
 		}
 	}
 
