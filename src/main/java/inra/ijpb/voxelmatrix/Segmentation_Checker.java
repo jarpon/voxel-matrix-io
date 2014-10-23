@@ -124,9 +124,6 @@ public class Segmentation_Checker implements PlugIn
 	/**
 	 * Custom window to define the plugin GUI
 	 */
-	/**
-	 * Custom window to define the plugin GUI
-	 */
 	private class CustomWindow extends StackWindow
 	{
 		/**
